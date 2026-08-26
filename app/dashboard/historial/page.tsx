@@ -1,6 +1,6 @@
 "use client";
 import { DataTable } from "../components/data-table";
-import { columns, Payment } from "../components/columns";
+import { columns, columnsHistorial, Payment } from "../components/columns";
 
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
@@ -13,9 +13,14 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
+
 
 function HistorialPage() {
-  const historial: Payment[] = [
+const [data, setData] = useState<Payment[]>([])
+
+  const [historial, setHistorial] = useState<Payment[]>([
     {
       id: 1,
       tipo: "Agua",
@@ -37,9 +42,20 @@ function HistorialPage() {
       monto: 150,
       estado: "vencido",
     },
-  ];
+  ]);
+
+  function handleDelete (id: number) {
+    setHistorial((datos) => datos.filter((item) => item.id !== id));
+  }
+
+  function handleEdit(id: number) {
+    // Aquí puedes implementar la lógica para editar el recibo con el ID proporcionado
+    console.log(`Editar recibo con ID: ${id}`);
+  }
+
   return (
     <>
+    {/* Encabezado de la página con el breadcrumb y el trigger del sidebar */}
       <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
         <div className="flex items-center gap-2 px-4">
           <SidebarTrigger className="-ml-1" />
@@ -67,16 +83,23 @@ function HistorialPage() {
         <div className=" text-lg font-semibold mt-4">Historial de recibos</div>
         
       </div> */}
+
+      {/* Contenido principal */}
       <section className="bg-gray-100 sm:w-sm lg:w-lg mx-auto rounded-xl mt-10 p-4">
         <label className="block text-gray-700 text-sm font-bold mb-2">
           Historial de recibos
         </label>
+        {/* Tabla de datos y botones */}
         <div className="container mx-auto py-6">
-          <DataTable columns={columns} data={historial} mostrarEdit={true} />
+          <DataTable data={historial} onDelete={handleDelete} onEdit={handleEdit} mostrarEdit={true} />
         </div>
+       
       </section>
     </>
   );
 }
 
+
+
 export default HistorialPage;
+

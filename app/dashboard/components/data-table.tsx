@@ -19,33 +19,44 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { columns, columnsHistorial, Payment } from "./columns";
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
+// interface DataTableProps<TData, TValue> {
+//   columns: ColumnDef<TData, TValue>[];
+//   data: TData[];
+//   mostrarEdit: boolean;
+// }
+
+interface DataTableProps {
+  data: Payment[];
+  onDelete: (id: number) => void;
+  onEdit: (id: number) => void;
   mostrarEdit: boolean;
 }
 
-//Exportar y recibir props de columns, data y mostrarEdit
-export function DataTable<TData, TValue>({
-  columns,
+//Recibe parametros de tipo generico TData y TValue, que representan el tipo de datos y el tipo de valor de las columnas de la tabla. Esto permite que la tabla sea reutilizable para diferentes tipos de datos y valores.
+export function DataTable({
   data,
+  onDelete,
+  onEdit,
   mostrarEdit,
-}: DataTableProps<TData, TValue>) {
+}: DataTableProps) {
   //Hacer visible el boton editar si mostrarEdit es true
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({actions: mostrarEdit});
-  
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
+    actions: mostrarEdit,
+  });
+
+  const tableColumns = columnsHistorial(onEdit, onDelete);
+
   const table = useReactTable({
     data,
-    columns,
+    columns: tableColumns,
     state: {
       columnVisibility,
     },
     onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel(),
-
   });
-
 
   return (
     <div className="overflow-hidden rounded-md border">
