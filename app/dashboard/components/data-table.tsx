@@ -19,18 +19,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+
 import { columns, columnsHistorial, Payment } from "./columns";
 
-// interface DataTableProps<TData, TValue> {
-//   columns: ColumnDef<TData, TValue>[];
-//   data: TData[];
-//   mostrarEdit: boolean;
-// }
 
 interface DataTableProps {
   data: Payment[];
   onDelete: (id: number) => void;
-  onEdit: (id: number) => void;
+  onEdit: (payment: Payment) => void;
   mostrarEdit: boolean;
 }
 
@@ -41,6 +37,7 @@ export function DataTable({
   onEdit,
   mostrarEdit,
 }: DataTableProps) {
+
   //Hacer visible el boton editar si mostrarEdit es true
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
     actions: mostrarEdit,

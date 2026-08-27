@@ -23,12 +23,6 @@ export type Payment = {
   estado: string;
 };
 
-export type Stats = {
-  mes: string;
-  tipo: string | undefined;
-  monto: number;
-};
-
 export type Contratos = {
   id: number;
   tipo: string | undefined;
@@ -109,7 +103,7 @@ export const columns: ColumnDef<Payment>[] = [
 ];
 
 export const columnsHistorial = (
-  onEdit: (id: number) => void,
+  onEdit: (payment: Payment) => void,
   onDelete: (id: number) => void,
 ): ColumnDef<Payment>[] => [
   {
@@ -161,7 +155,9 @@ export const columnsHistorial = (
               Copy payment ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => onEdit(payment.id)}>
+
+            
+            <DropdownMenuItem onClick={() => onEdit(payment)}>
               Editar
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => onDelete(payment.id)}>
