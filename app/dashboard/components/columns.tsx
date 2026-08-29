@@ -13,6 +13,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+
+
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 export type Payment = {
@@ -25,7 +27,7 @@ export type Payment = {
 
 export type Contratos = {
   id: number;
-  tipo: string | undefined;
+  tipo: string;
   numero: number;
 };
 

@@ -20,34 +20,28 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import { columns, columnsHistorial, Payment } from "./columns";
-
-
-interface DataTableProps {
-  data: Payment[];
-  onDelete: (id: number) => void;
-  onEdit: (payment: Payment) => void;
+interface DataTableProps<TData, TValue> {
+  columns: ColumnDef<TData, TValue>[];
+  data: TData[];
+  onDelete?: (id: number) => void;
+  onEdit?: (data: TData) => void;
   mostrarEdit: boolean;
 }
 
 //Recibe parametros de tipo generico TData y TValue, que representan el tipo de datos y el tipo de valor de las columnas de la tabla. Esto permite que la tabla sea reutilizable para diferentes tipos de datos y valores.
-export function DataTable({
+export function DataTable<TData, TValue>({
   data,
-  onDelete,
-  onEdit,
+  columns,
   mostrarEdit,
-}: DataTableProps) {
-
+}: DataTableProps<TData, TValue>) {
   //Hacer visible el boton editar si mostrarEdit es true
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
     actions: mostrarEdit,
   });
 
-  const tableColumns = columnsHistorial(onEdit, onDelete);
-
   const table = useReactTable({
     data,
-    columns: tableColumns,
+    columns,
     state: {
       columnVisibility,
     },
