@@ -1,5 +1,5 @@
 "use client";
-import { columns, columnsRegistrar, Payment } from "./components/columns";
+import { columnsRegistrar, Payment } from "./components/columns";
 import { DataTable } from "../components/data-table";
 import { NumericFormat } from "react-number-format";
 
@@ -29,9 +29,6 @@ import Link from "next/link";
 
 const estados = ["pagado", "pendiente", "vencido"];
 
-
-
-
 function RegistrarPage() {
   const fechaReciente = new Date();
   const opciones = { day: "numeric", month: "long", year: "numeric" } as const;
@@ -55,8 +52,6 @@ function RegistrarPage() {
     monto: 0,
     estado: "",
   });
-
-  
 
   const [recibos, setRecibos] = useState<Payment[]>([]);
 
@@ -153,7 +148,7 @@ function RegistrarPage() {
                 step="0.01"
                 // value={recibo.monto || ""}
                 onValueChange={(values) =>
-                  setRecibo({ ...recibo, monto: values.floatValue ?? 0})
+                  setRecibo({ ...recibo, monto: values.floatValue ?? 0 })
                 }
               />
               {/* <Input
@@ -216,7 +211,11 @@ function RegistrarPage() {
           Recibos recientes
         </label>
         <div className="container mx-auto py-6">
-          <DataTable columns={columnsRegistrar} data={recibos} />
+          <DataTable
+            columns={columnsRegistrar}
+            data={recibos}
+            mostrarEdit={false}
+          />
         </div>
       </section>
     </>
