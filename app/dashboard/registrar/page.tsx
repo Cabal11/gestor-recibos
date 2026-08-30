@@ -1,5 +1,5 @@
 "use client";
-import { columns, Payment, mostrarEdit } from "../components/columns";
+import { columns, columnsRegistrar, Payment } from "./components/columns";
 import { DataTable } from "../components/data-table";
 import { NumericFormat } from "react-number-format";
 
@@ -56,15 +56,9 @@ function RegistrarPage() {
     estado: "",
   });
 
-  interface Recibo {
-    id: number;
-    tipo: string;
-    fecha: string;
-    monto: number;
-    estado: string;
-  }
+  
 
-  const [recibos, setRecibos] = useState<Recibo[]>([]);
+  const [recibos, setRecibos] = useState<Payment[]>([]);
 
   return (
     <>
@@ -222,7 +216,7 @@ function RegistrarPage() {
           Recibos recientes
         </label>
         <div className="container mx-auto py-6">
-          <DataTable columns={columns} data={recibos} mostrarEdit={false} />
+          <DataTable columns={columnsRegistrar} data={recibos} />
         </div>
       </section>
     </>

@@ -134,12 +134,4 @@ function ContratosPage() {
 
 export default ContratosPage;
 
-// Un cuadro de la cantidad actual del mes gastado
-//Cuadro con la cantidad del mes pasado
 
-//Comparacion entre meses los recibo
-// mes junio Agua,etc. + total - julio Agua,etc + total
-
-//Buscar por tipo de recibo y una lista segun el tipo, con fecha, monto y estado.
-
-// Dos cuadros arriba, 2 largos a lo ancho hacia abajo
