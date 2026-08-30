@@ -53,7 +53,7 @@ export function EditModal({ payment, open, onOpenChange, onSave }: EditRecibo) {
       setSelectedFecha(payment.fecha);
     } else {
       // Limpia los cambios temporales al cancelar o cerrar el modal.
-      setMonto(undefined);
+      setMonto(0);
     }
     onOpenChange(nextOpen);
   }
