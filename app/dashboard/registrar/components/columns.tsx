@@ -5,17 +5,17 @@ export type Payment = {
   tipo: string;
   fecha: string;
   monto: number;
-  estado: string;
+  estado: "";
 };
 
 export const columnsRegistrar: ColumnDef<Payment>[] = [
   {
     accessorKey: "tipo",
-    header: "Tipo de recibo",
+    header: "Concepto",
   },
   {
     accessorKey: "fecha",
-    header: "Fecha",
+    header: "Fecha de pago",
   },
   {
     accessorKey: "monto",

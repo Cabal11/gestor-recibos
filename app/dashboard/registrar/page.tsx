@@ -1,7 +1,4 @@
 "use client";
-import { columnsRegistrar, Payment } from "./components/columns";
-import { DataTable } from "../components/data-table";
-import { NumericFormat } from "react-number-format";
 
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
@@ -22,38 +19,43 @@ import {
   ComboboxItem,
   ComboboxList,
 } from "@/components/ui/combobox";
+
+import { columnsRegistrar, Payment } from "./components/columns";
+import { DataTable } from "../components/data-table";
+import { NumericFormat } from "react-number-format";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 
-const estados = ["pagado", "pendiente", "vencido"];
-
 function RegistrarPage() {
-  const fechaReciente = new Date();
-  const opciones = { day: "numeric", month: "long", year: "numeric" } as const;
-  const fechaCorta = fechaReciente.toLocaleDateString("es-ES", opciones);
+  const estados = ["pagado", "pendiente", "vencido"];
   const today = new Date();
-  const [fecha, setFecha] = useState("");
-  const year = today.getFullYear();
-  const month = String(today.getMonth() + 1).padStart(2, "0");
-  const day = String(today.getDate()).padStart(2, "0");
-  const fechaActual = `${year}-${month}-${day}`;
+  const fechaActual = [
+    today.getFullYear(),
+    String(today.getMonth() + 1).padStart(2, "0"),
+    String(today.getDate()).padStart(2, "0"),
+  ].join("-");
 
-  const [count, setCount] = useState(0);
-  const [tipo, setTipo] = useState("");
-  const [monto, setMonto] = useState(0);
-  const [estado, setEstado] = useState("");
-
-  const [recibo, setRecibo] = useState({
+  const empty = (): Payment => ({
     id: 0,
     tipo: "",
-    fecha: "",
+    fecha: fechaActual,
     monto: 0,
     estado: "",
   });
 
-  const [recibos, setRecibos] = useState<Payment[]>([]);
+  const [newRecibo, setNewRecibo] = useState<Payment>(empty());
+  const [recibosRecientes, setRecibosRecientes] = useState<Payment[]>([]);
+
+  function handleSave(recibo: Payment) {
+    setRecibosRecientes([...recibosRecientes, recibo]);
+    setNewRecibo(empty());
+  }
+
+  useEffect(() => {
+    console.log(recibosRecientes);
+  }, [recibosRecientes]);
 
   return (
     <>
@@ -79,34 +81,39 @@ function RegistrarPage() {
           </Breadcrumb>
         </div>
       </header>
-      {/* <div className="bg-cyan-500 flex h-16 items-start justify-around rounded-b-lg mb-20">
-        <div className=" text-lg font-semibold mt-4">Registrar recibos</div>
-      </div> */}
+
+      {/* Seccion de guardar recibos */}
 
       <section className="bg-gray-100 max-sm:w-sm lg:w-lg mx-auto mt-5 rounded-xl p-4">
         <div>
           <h2 className="text-xl font-bold mb-4 text-center">
             Formulario de registro
           </h2>
-          <form className="flex flex-col gap-1 items-center">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSave(newRecibo);
+            }}
+            className="flex flex-col gap-1 items-center"
+          >
             <div className="mb-4">
               <label
                 className="block text-gray-700 text-sm font-bold mb-2"
                 htmlFor="tipo"
               >
-                Tipo de recibo
+                ¿Qué pagaste?
               </label>
               <Input
                 className="shadow appearance-none border rounded max-w-80 min-w-60 py-2 px-6 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 id="tipo"
                 type="text"
-                placeholder="agua, luz, etc."
-                value={recibo.tipo}
+                placeholder="Ej: agua, luz, etc."
+                value={newRecibo.tipo}
                 onChange={(e) =>
-                  setRecibo({
-                    ...recibo,
-                    tipo: e.target.value,
-                    id: recibo.id + 1,
+                  setNewRecibo({
+                    ...newRecibo,
+                    id: recibosRecientes.length + 1,
+                    tipo: e.currentTarget.value,
                   })
                 }
               />
@@ -116,15 +123,15 @@ function RegistrarPage() {
                 className="block text-gray-700 text-sm font-bold mb-2"
                 htmlFor="fecha"
               >
-                Fecha
+                Fecha de pago
               </label>
               <Input
                 className="shadow appearance-none border rounded max-w-80 min-w-60 py-2 px-6 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 id="fecha"
                 type="date"
-                value={recibo.fecha}
+                value={newRecibo.fecha}
                 onChange={(e) =>
-                  setRecibo({ ...recibo, fecha: e.target.value })
+                  setNewRecibo({ ...newRecibo, fecha: e.currentTarget.value })
                 }
               />
             </div>
@@ -146,23 +153,11 @@ function RegistrarPage() {
                 placeholder="0"
                 min="0"
                 step="0.01"
-                // value={recibo.monto || ""}
+                value={newRecibo.monto}
                 onValueChange={(values) =>
-                  setRecibo({ ...recibo, monto: values.floatValue ?? 0 })
+                  setNewRecibo({ ...newRecibo, monto: values.floatValue ?? 0 })
                 }
               />
-              {/* <Input
-                className="shadow appearance-none border rounded max-w-80 min-w-60 py-2 px-6 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                id="monto"
-                type="number"
-                placeholder="0"
-                min="0"
-                step="0.01"
-                value={recibo.monto || ""}
-                onChange={(e) =>
-                  setRecibo({ ...recibo, monto: parseFloat(e.target.value) })
-                }
-              /> */}
             </div>
             <div>
               <label
@@ -177,13 +172,15 @@ function RegistrarPage() {
                   placeholder="Seleccionar estado"
                 />
                 <ComboboxContent>
-                  <ComboboxEmpty>No items found.</ComboboxEmpty>
+                  <ComboboxEmpty>Elementos no encontrados</ComboboxEmpty>
                   <ComboboxList>
                     {(item) => (
                       <ComboboxItem
                         key={item}
                         value={item}
-                        onClick={() => setRecibo({ ...recibo, estado: item })}
+                        onClick={() =>
+                          setNewRecibo({ ...newRecibo, estado: item })
+                        }
                       >
                         {item}
                       </ComboboxItem>
@@ -195,10 +192,6 @@ function RegistrarPage() {
             <Button
               type="submit"
               className="bg-green-500 text-white hover:bg-green-600 mt-6"
-              onClick={(e) => {
-                e.preventDefault();
-                setRecibos((prev) => [...prev, recibo]);
-              }}
             >
               Registrar recibo
             </Button>
@@ -213,7 +206,7 @@ function RegistrarPage() {
         <div className="container mx-auto py-6">
           <DataTable
             columns={columnsRegistrar}
-            data={recibos}
+            data={recibosRecientes}
             mostrarEdit={false}
           />
         </div>

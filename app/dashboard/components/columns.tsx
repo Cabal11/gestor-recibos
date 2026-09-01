@@ -110,11 +110,11 @@ export const columnsHistorial = (
 ): ColumnDef<Payment>[] => [
   {
     accessorKey: "tipo",
-    header: "Tipo de recibo",
+    header: "Concepto",
   },
   {
     accessorKey: "fecha",
-    header: "Fecha",
+    header: "Fecha de pago",
   },
   {
     accessorKey: "monto",

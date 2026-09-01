@@ -20,6 +20,7 @@ import {
 import Link from "next/link";
 
 function ContratosPage() {
+  
   const emptyContrato = (): Contratos => ({
     id: 0,
     tipo: "",
