@@ -87,7 +87,7 @@ export function DataTable<TData, TValue>({
           ) : (
             <TableRow>
               <TableCell colSpan={columns.length} className="h-24 text-center">
-                No hay recibos recientes.
+                Sin datos disponibles, registre nuevos datos.
               </TableCell>
             </TableRow>
           )}

@@ -3,6 +3,8 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
+import ContratosForm from "./components/contratosForm";
+
 import { columnsContrato, Contratos } from "./components/columns";
 import { DataTable } from "../components/data-table";
 import { EditModal } from "./components/modal";
@@ -20,42 +22,40 @@ import {
 import Link from "next/link";
 
 function ContratosPage() {
-  
   const emptyContrato = (): Contratos => ({
     id: 0,
     tipo: "",
     numero: 0,
   });
+
+  const [newContrato, setNewContrato] = useState<Contratos>(emptyContrato());
   const [modalOpen, setModalOpen] = useState(false);
   const [contratos, setContratos] = useState<Contratos[]>([]);
   const [selectedContrato, setSelectedContrato] = useState<Contratos | null>(
     null,
   );
 
-  const [newContrato, setNewContrato] = useState<Contratos>(emptyContrato());
-
-
   function handleSave(contrato: Contratos) {
     setContratos([...contratos, contrato]);
     setNewContrato(emptyContrato());
     setSelectedContrato(null);
-   
   }
 
   function handleSaveEdit(updatedContrato: Contratos) {
-    
-    setContratos((datos) => datos.map((item) => item.id == updatedContrato.id ? updatedContrato : item));
-    console.log(contratos)
+    setContratos((datos) =>
+      datos.map((item) =>
+        item.id == updatedContrato.id ? updatedContrato : item,
+      ),
+    );
+    console.log(contratos);
     setNewContrato(emptyContrato());
     setSelectedContrato(null);
-    setModalOpen(false)
+    setModalOpen(false);
   }
 
   function handleEdit(contrato: Contratos) {
-    
     setSelectedContrato(contrato);
     setModalOpen(true);
-    
   }
 
   function handleDelete(id: number) {
@@ -87,78 +87,18 @@ function ContratosPage() {
         </div>
       </header>
 
-      {/* <div className="bg-cyan-500 flex h-16 items-start justify-around rounded-b-lg mb-10">
-        <div className=" text-lg font-semibold mt-4">Estadisticas</div>
-      </div> */}
-      <section className="bg-gray-100 max-sm:w-sm lg:w-lg mx-auto mt-5 rounded-xl p-4">
-        <div>
-          <h2 className="text-xl font-bold mb-4 text-center">
-            Agregar contratos, planes, NISE, otros..
-          </h2>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleSave(newContrato);
-            }}
-            className="flex flex-col gap-1 items-center"
-          >
-            <div className="mb-4">
-              <label
-                className="block text-gray-700 text-sm font-bold mb-2"
-                htmlFor="tipo"
-              >
-                Tipo de contrato
-              </label>
-              <Input
-                className="shadow appearance-none border rounded max-w-80 min-w-60 py-2 px-6 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                id="tipo"
-                type="text"
-                placeholder="Agua, luz, etc."
-                value={newContrato.tipo}
-                onChange={(e) =>
-                  setNewContrato({
-                    ...newContrato,
-                    id: contratos.length + 1,
-                    tipo: e.currentTarget.value,
-                  })
-                }
-              />
-            </div>
-            <div className="mb-4">
-              <label
-                className="block text-gray-700 text-sm font-bold mb-2"
-                htmlFor="numero"
-              >
-                Numero contrato
-              </label>
-              <Input
-                className="shadow appearance-none border rounded max-w-80 min-w-60 py-2 px-6 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                id="numero"
-                value={newContrato.numero}
-                onChange={(e) =>
-                  setNewContrato({
-                    ...newContrato,
-                    numero: parseInt(e.currentTarget.value),
-                  })
-                }
-              />
-            </div>
-            <Button
-              type="submit"
-              className="bg-green-500 text-white hover:bg-green-600 mt-6"
-            >
-              Registrar contrato
-            </Button>
-          </form>
-        </div>
-      </section>
+      {/* Formulario para agregar nuevos contratos */}
+      <ContratosForm
+        onNuevoContrato={handleSave}
+        idContrato={contratos.length + 1}
+      />
 
       <section className="bg-gray-100 sm:w-sm lg:w-lg mx-auto rounded-xl p-4 mt-10">
         <label className="block text-gray-700 text-sm font-bold mb-2">
           Contratos registrados
         </label>
 
-        {/* Modal componente */}
+        {/* Modal componente para editar */}
         {selectedContrato && (
           <EditModal
             key={selectedContrato.id}
@@ -169,6 +109,7 @@ function ContratosPage() {
           />
         )}
 
+        {/* Tabla de contratos */}
         <div className="container mx-auto py-6">
           <DataTable
             data={contratos}
@@ -182,13 +123,3 @@ function ContratosPage() {
 }
 
 export default ContratosPage;
-
-// Un cuadro de la cantidad actual del mes gastado
-//Cuadro con la cantidad del mes pasado
-
-//Comparacion entre meses los recibo
-// mes junio Agua,etc. + total - julio Agua,etc + total
-
-//Buscar por tipo de recibo y una lista segun el tipo, con fecha, monto y estado.
-
-// Dos cuadros arriba, 2 largos a lo ancho hacia abajo

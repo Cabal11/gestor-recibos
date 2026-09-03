@@ -47,21 +47,21 @@ const data = {
       
     // },
     {
-      title: "Recibos",
+      title: "Pagos",
       url: "#",
       icon: <DollarSign />,
       isActive: true,
       items: [
         {
-          title: "Registrar recibos",
+          title: "Registrar pagos",
           url: "/dashboard/registrar",
         },
         {
-          title: "Historial de recibos",
+          title: "Historial de pagos",
           url: "/dashboard/historial",
         },
         {
-          title: "Contratos",
+          title: "Registrar contratos",
           url: "/dashboard/contratos",
         },
       ],

@@ -91,20 +91,17 @@ function HistorialPage() {
               </BreadcrumbItem>
               <BreadcrumbSeparator className="hidden md:block" />
               <BreadcrumbItem>
-                <BreadcrumbPage>Historial de recibos</BreadcrumbPage>
+                <BreadcrumbPage>Historial de pagos</BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
         </div>
       </header>
-      {/* <div className="bg-cyan-500 flex h-16 items-start justify-around rounded-b-lg mb-10">
-        <div className=" text-lg font-semibold mt-4">Historial de recibos</div>
-        
-      </div> */}
+
       {/* Contenido principal */}
       <section className="bg-gray-100 sm:w-sm lg:w-lg mx-auto rounded-xl mt-10 p-4">
         <label className="block text-gray-700 text-sm font-bold mb-2">
-          Historial de recibos
+          Historial de pagos realizados
         </label>
 
         {/* Modal para editar recibo */}
@@ -120,9 +117,8 @@ function HistorialPage() {
         {/* Tabla de datos y botones */}
         <div className="container mx-auto py-6">
           <DataTable
+            columns={columnsHistorial(handleEdit, handleDelete)}
             data={historial}
-            onDelete={handleDelete}
-            onEdit={handleEdit}
             mostrarEdit={true}
           />
         </div>

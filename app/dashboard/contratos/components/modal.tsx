@@ -83,7 +83,7 @@ export function EditModal({
             <Field>
               <Label htmlFor="numero-1">Numero</Label>
               <Input
-                id="numero-1"
+                id="numero"
                 name="numero"
                 type="number"
                 value={selectedNumero ?? 0}

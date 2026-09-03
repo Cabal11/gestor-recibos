@@ -1,12 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table";
-
-export type Payment = {
-  id: number;
-  tipo: string;
-  fecha: string;
-  monto: number;
-  estado: "";
-};
+import {Payment} from "@/types/payment"
 
 export const columnsRegistrar: ColumnDef<Payment>[] = [
   {
