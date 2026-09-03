@@ -41,11 +41,11 @@ const data = {
     },
   ],
   navMain: [
-    // {title: 'Home',
-    //   url: '/dashboard',
-    //   icon: <House />,
-      
-    // },
+    {title: 'Inicio',
+      url: '/dashboard',
+      icon: <House />,
+      isActive: true
+    },
     {
       title: "Pagos",
       url: "#",
