@@ -16,6 +16,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Payment } from "@/types/payment";
 
+import { PagosPost } from "@/app/api/registrar/pagos";
+
 interface Props {
   onNuevoRegistro: (recibo: Payment) => void;
   id: number;
@@ -41,9 +43,15 @@ function RegistrarForm({ onNuevoRegistro, id }: Props) {
 
   const [newRecibo, setNewRecibo] = useState<Payment>(empty());
 
-  const handleSave = (recibo: Payment) => {
-    onNuevoRegistro(recibo);
-    setNewRecibo(empty());
+  const handleSave = async (recibo: Payment) => {
+    try {
+      await PagosPost(recibo);
+      onNuevoRegistro(recibo);
+      setNewRecibo(empty());
+      
+    } catch (error) {
+      alert(`No se pudo guardar el pago: ${error}`);
+    }
   };
 
   return (
