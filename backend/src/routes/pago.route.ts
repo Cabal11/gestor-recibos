@@ -1,9 +1,11 @@
 import express from 'express';
-import * as userControlller from "../controllers/pago.controller.ts"
+import * as pagoController from "../controllers/pago.controller.ts"
 
 const router = express.Router();
 
-router.get("/pagos", userControlller.getPagos)
-router.post("/pagos", userControlller.crearPago)
+router.get("/pagos", pagoController.getPagos)
+router.post("/pagos", pagoController.crearPago)
+router.put("/pagos/:id", pagoController.editarPago)
+router.delete("/pagos/:id", pagoController.eliminarPagos)
 
 export default router;

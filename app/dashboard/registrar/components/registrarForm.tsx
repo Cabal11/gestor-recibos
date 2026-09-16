@@ -16,7 +16,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Payment } from "@/types/payment";
 
-import { PagosPost } from "@/app/api/registrar/pagos";
+import { PagosPost } from "@/app/services/registrar/pagos";
 
 interface Props {
   onNuevoRegistro: (recibo: Payment) => void;
@@ -81,6 +81,7 @@ function RegistrarForm({ onNuevoRegistro, id }: Props) {
                   id="tipo"
                   type="text"
                   placeholder="Ej: agua, luz, etc."
+                  required
                   value={newRecibo.tipo}
                   onChange={(e) =>
                     setNewRecibo({
@@ -129,6 +130,7 @@ function RegistrarForm({ onNuevoRegistro, id }: Props) {
                   placeholder="0"
                   min="0"
                   step="0.01"
+                  required
                   value={newRecibo.monto}
                   onValueChange={(values) =>
                     setNewRecibo({

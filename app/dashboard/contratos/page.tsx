@@ -21,6 +21,8 @@ import {
 } from "@/components/ui/breadcrumb";
 import Link from "next/link";
 
+import { DeleteContrato } from "@/app/services/contratos/contratos";
+
 function ContratosPage() {
   const emptyContrato = (): Contratos => ({
     id: 0,
@@ -59,6 +61,9 @@ function ContratosPage() {
   }
 
   function handleDelete(id: number) {
+    DeleteContrato(id);
+    setContratos((contratos) => contratos.filter((item) => item.id != id))
+
     throw new Error("Function not implemented.");
   }
 

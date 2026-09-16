@@ -17,6 +17,12 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { EditModal } from "./components/modal";
 
+import {
+  ObtenerPagos,
+  EditPagos,
+  DeletePagos,
+} from "@/app/services/registrar/pagos";
+
 function HistorialPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPayment, setSelectedPayment] = useState<Payment | null>(null);
@@ -47,6 +53,7 @@ function HistorialPage() {
   ]);
 
   function handleDelete(id: number) {
+    DeletePagos(id);
     setHistorial((datos) => datos.filter((item) => item.id !== id));
   }
 
@@ -56,6 +63,7 @@ function HistorialPage() {
       setIsModalOpen(false);
       return;
     }
+    
     setSelectedPayment(payment);
     setIsModalOpen(true);
 
@@ -63,6 +71,7 @@ function HistorialPage() {
   }
 
   function handleSave(updatedPayment: Payment) {
+    EditPagos(updatedPayment);
     setHistorial((prevData) =>
       prevData.map((item) =>
         item.id === updatedPayment.id ? updatedPayment : item,

@@ -17,6 +17,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Contratos } from "./columns";
 
+import { EditContrato } from "@/app/services/contratos/contratos";
+
 interface EditContrato {
   contrato: Contratos;
   open: boolean;
@@ -116,6 +118,6 @@ function handleSave(
     tipo: selectedTipo,
     numero: selectedNumero,
   };
-
+  EditContrato(updatedContrato);
   onSave(updatedContrato);
 }

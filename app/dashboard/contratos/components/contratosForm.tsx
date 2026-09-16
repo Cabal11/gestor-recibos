@@ -1,32 +1,34 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 import { columnsContrato, Contratos } from "../components/columns";
 import { DataTable } from "../../components/data-table";
 import { EditModal } from "../components/modal";
+import { CreateContrato } from "@/app/services/contratos/contratos";
 
-import React from 'react'
+import React from "react";
 
 interface Props {
-    onNuevoContrato: (contrato: Contratos) => void;
-    idContrato: number;
+  onNuevoContrato: (contrato: Contratos) => void;
+  idContrato: number;
 }
 
 export default function ContratosForm({ onNuevoContrato, idContrato }: Props) {
-    const emptyContrato = (): Contratos => ({
-      id: 0,
-      tipo: "",
-      numero: 0,
-    });
+  const emptyContrato = (): Contratos => ({
+    id: 0,
+    tipo: "",
+    numero: 0,
+  });
 
-    const [newContrato, setNewContrato] = useState<Contratos>(emptyContrato());
+  const [newContrato, setNewContrato] = useState<Contratos>(emptyContrato());
 
-    const handleSave = (contrato: Contratos) => {
-        onNuevoContrato(contrato);
-        setNewContrato(emptyContrato());
-    };
+  const handleSave = (contrato: Contratos) => {
+    CreateContrato(contrato);
+    onNuevoContrato(contrato);
+    setNewContrato(emptyContrato());
+  };
 
   return (
     <>
@@ -52,6 +54,7 @@ export default function ContratosForm({ onNuevoContrato, idContrato }: Props) {
               <Input
                 className="shadow appearance-none border rounded max-w-80 min-w-60 py-2 px-6 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 id="tipo"
+                required
                 type="text"
                 placeholder="Agua, luz, etc."
                 value={newContrato.tipo}
@@ -74,13 +77,16 @@ export default function ContratosForm({ onNuevoContrato, idContrato }: Props) {
               <Input
                 className="shadow appearance-none border rounded max-w-80 min-w-60 py-2 px-6 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 id="numero"
+                required
                 value={newContrato.numero}
-                onChange={(e) =>
+                onChange={(e) => {
+                  const num = e.currentTarget.value;
+
                   setNewContrato({
                     ...newContrato,
-                    numero: parseInt(e.currentTarget.value),
-                  })
-                }
+                    numero: num === "" ? 0 : Number(num),
+                  });
+                }}
               />
             </div>
             <Button
@@ -96,3 +102,11 @@ export default function ContratosForm({ onNuevoContrato, idContrato }: Props) {
   );
 }
 
+function isNan(num: string) {
+  let newNum = 0;
+
+  if (!Number.isNaN) {
+    newNum = parseInt(num);
+  }
+  return newNum;
+}
