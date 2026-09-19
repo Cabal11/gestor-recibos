@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import { useState } from "react";
 import {
   Combobox,
   ComboboxContent,
@@ -11,12 +12,15 @@ import {
 
 import { NumericFormat } from "react-number-format";
 import { Button } from "@/components/ui/button";
+import ErrorMessage from "../../components/error-message";
 import { Input } from "@/components/ui/input";
-import { useEffect, useState } from "react";
-import Link from "next/link";
+
 import { Payment } from "@/types/payment";
+import { PaymentForm } from "@/shared/pago.schema";
 
 import { PagosPost } from "@/app/services/registrar/pagos";
+import { pagoSchema } from "@/shared/pago.schema";
+
 
 interface Props {
   onNuevoRegistro: (recibo: Payment) => void;
@@ -31,28 +35,63 @@ function RegistrarForm({ onNuevoRegistro, id }: Props) {
     String(today.getDate()).padStart(2, "0"),
   ].join("-");
 
+  //Tipo parap form y agregar valores iniciales y tipo para validar en submit
+
   const empty = (): Payment => ({
     id: 0,
     tipo: "",
     fecha: fechaActual,
     monto: 0,
-    estado: "",
+    estado: "pagado",
   });
 
   const estados = ["pagado", "pendiente", "vencido"];
 
   const [newRecibo, setNewRecibo] = useState<Payment>(empty());
+  const [errors, setErrors] = useState<Partial<Record<keyof PaymentForm, string>>>(
+    {},
+  );
 
   const handleSave = async (recibo: Payment) => {
     try {
-      await PagosPost(recibo);
-      onNuevoRegistro(recibo);
+      const result = pagoSchema.safeParse(recibo);
+
+      if (!result.success) {
+        const fieldErrors = result.error.flatten().fieldErrors;
+        setErrors({
+          id: fieldErrors.id?.[0],
+          tipo: fieldErrors.tipo?.[0],
+          monto: fieldErrors.monto?.[0],
+          fecha: fieldErrors.fecha?.[0],
+        });
+
+        return;
+      }
+      console.log(result.data);
+      await PagosPost(result.data);
+      onNuevoRegistro(result.data);
       setNewRecibo(empty());
-      
     } catch (error) {
       alert(`No se pudo guardar el pago: ${error}`);
     }
   };
+
+  const handleChange = <K extends keyof Payment>(
+    field: K,
+    value: Payment[K],
+  ) => {
+    setNewRecibo((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+
+    setErrors((prev) => ({
+      ...prev,
+      [field]: undefined,
+    }));
+  };
+
+
 
   return (
     <>
@@ -64,6 +103,7 @@ function RegistrarForm({ onNuevoRegistro, id }: Props) {
           <form
             onSubmit={(e) => {
               e.preventDefault();
+
               handleSave(newRecibo);
             }}
             className="w-full"
@@ -81,17 +121,12 @@ function RegistrarForm({ onNuevoRegistro, id }: Props) {
                   id="tipo"
                   type="text"
                   placeholder="Ej: agua, luz, etc."
-                  required
                   value={newRecibo.tipo}
-                  onChange={(e) =>
-                    setNewRecibo({
-                      ...newRecibo,
-                      id: id,
-                      tipo: e.currentTarget.value,
-                    })
-                  }
+                  onChange={(e) => handleChange("tipo", e.currentTarget.value)}
                 />
+                <ErrorMessage message={errors.tipo} />
               </div>
+
               <div className="mb-4">
                 <label
                   className="block text-gray-700 text-sm font-bold mb-2"
@@ -104,13 +139,9 @@ function RegistrarForm({ onNuevoRegistro, id }: Props) {
                   id="fecha"
                   type="date"
                   value={newRecibo.fecha}
-                  onChange={(e) =>
-                    setNewRecibo({
-                      ...newRecibo,
-                      fecha: e.currentTarget.value,
-                    })
-                  }
+                  onChange={(e) => handleChange("fecha", e.currentTarget.value)}
                 />
+                <ErrorMessage message={errors.fecha} />
               </div>
               <div className="mb-4">
                 <label
@@ -127,18 +158,25 @@ function RegistrarForm({ onNuevoRegistro, id }: Props) {
                   id="monto"
                   prefix="₡"
                   thousandSeparator=","
+                  customInput={Input}
+                  allowNegative={false}
+                  fixedDecimalScale
                   placeholder="0"
                   min="0"
                   step="0.01"
-                  required
                   value={newRecibo.monto}
-                  onValueChange={(values) =>
-                    setNewRecibo({
-                      ...newRecibo,
-                      monto: values.floatValue ?? 0,
-                    })
-                  }
+                  onValueChange={(values) => {
+                    handleChange("id", id);
+                    setNewRecibo((prev) => ({
+                      ...prev,
+                      monto: values.floatValue,
+                    }));
+                    if (values.floatValue !== undefined) {
+                      setErrors((prev) => ({ ...prev, monto: undefined }));
+                    }
+                  }}
                 />
+                <ErrorMessage message={errors.monto} />
               </div>
               <div>
                 <label
@@ -147,7 +185,14 @@ function RegistrarForm({ onNuevoRegistro, id }: Props) {
                 >
                   Estado
                 </label>
-                <Combobox items={estados}>
+
+                <Combobox
+                  items={estados}
+                  value={newRecibo.estado}
+                  onValueChange={(value) =>
+                    handleChange("estado", value ?? "pagado")
+                  }
+                >
                   <ComboboxInput
                     className="h-10 w-full shadow appearance-none border rounded py-2 px-1 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     placeholder="Seleccionar estado"
@@ -156,25 +201,22 @@ function RegistrarForm({ onNuevoRegistro, id }: Props) {
                     <ComboboxEmpty>Elementos no encontrados</ComboboxEmpty>
                     <ComboboxList>
                       {(item) => (
-                        <ComboboxItem
-                          key={item}
-                          value={item}
-                          onClick={() =>
-                            setNewRecibo({ ...newRecibo, estado: item })
-                          }
-                        >
+                        <ComboboxItem key={item} value={item}>
                           {item}
                         </ComboboxItem>
                       )}
                     </ComboboxList>
                   </ComboboxContent>
                 </Combobox>
+                {errors.estado && (
+                  <p className="mt-1 text-sm text-red-500">{errors.estado}</p>
+                )}
               </div>
               <Button
                 type="submit"
                 className="bg-green-500 text-white hover:bg-green-600 col-span-full lg:justify-self-end"
               >
-                Registrar recibo
+                Registrar
               </Button>
             </div>
           </form>

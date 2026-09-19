@@ -44,8 +44,8 @@ function RegistrarPage() {
     id: 0,
     tipo: "",
     fecha: fechaActual,
-    monto: 0,
-    estado: "",
+    monto: undefined,
+    estado: undefined,
   });
 
   // Estados
