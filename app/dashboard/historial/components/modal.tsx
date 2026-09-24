@@ -23,7 +23,9 @@ import {
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Payment } from "../../components/columns";
+import ErrorMessage from "../../components/error-message";
+import { Payment } from "@/types/payment";
+import { pagoSchema, PaymentForm } from "@/shared/pago.schema";
 
 interface EditRecibo {
   payment: Payment;
@@ -35,28 +37,72 @@ interface EditRecibo {
 const estados = ["pagado", "pendiente", "vencido"];
 
 export function EditModal({ payment, open, onOpenChange, onSave }: EditRecibo) {
-  const [selectedTipo, setSelectedTipo] = useState(payment.tipo);
-  const [newMonto, setMonto] = useState<number | undefined>();
-  const [selectedEstado, setSelectedEstado] = useState(
-    payment.estado,
-  );
-  const [selectedFecha, setSelectedFecha] = useState(
-    payment.fecha,
-  );
+  const [formData, setFormData] = useState<Payment>({
+    id: payment.id,
+    tipo: payment.tipo,
+    fecha: payment.fecha,
+    monto: payment.monto,
+    estado: payment.estado,
+  });
+
+  const [error, setError] = useState<
+    Partial<Record<keyof PaymentForm, string>>
+  >({});
+
+  const handleChange = <K extends keyof Payment>(
+    field: K,
+    value: Payment[K],
+  ) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+
+    setError((prev) => ({ ...prev, [field]: undefined }));
+  };
 
   function handleOpenChange(nextOpen: boolean) {
-    if (nextOpen) {
-      // Carga los datos del recibo seleccionado cada vez que se abre el modal.
-      setSelectedTipo(payment.tipo);
-      setMonto(payment.monto);
-      setSelectedEstado(payment.estado);
-      setSelectedFecha(payment.fecha);
-    } else {
-      // Limpia los cambios temporales al cancelar o cerrar el modal.
-      setMonto(0);
+    if (!nextOpen) {
+      setFormData({
+        id: 0,
+        tipo: "",
+        fecha: "",
+        monto: 0,
+        estado: "",
+      });
+
+      setError({});
     }
     onOpenChange(nextOpen);
   }
+
+  const handleSave = (
+    payment: Payment,
+
+    onSave: (updatedPayment: Payment) => void,
+  ) => {
+    setError({});
+
+    const updatedPayment: Payment = {
+      id: payment.id || 0,
+      tipo: formData.tipo,
+      fecha: formData.fecha,
+      monto: formData.monto,
+      estado: formData.estado,
+    };
+
+    const result = pagoSchema.safeParse(updatedPayment);
+
+    if (!result.success) {
+      const fieldErrors = result.error.flatten().fieldErrors;
+      setError({
+        tipo: fieldErrors.tipo?.[0],
+        monto: fieldErrors.monto?.[0],
+        fecha: fieldErrors.fecha?.[0],
+        estado: fieldErrors.estado?.[0],
+      });
+      return;
+    }
+
+    onSave(updatedPayment);
+  };
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -66,10 +112,7 @@ export function EditModal({ payment, open, onOpenChange, onSave }: EditRecibo) {
             event.preventDefault();
             handleSave(
               payment,
-              selectedTipo,
-              selectedFecha,
-              newMonto ?? payment?.monto ?? 0,
-              selectedEstado,
+
               onSave,
             );
           }}
@@ -88,9 +131,13 @@ export function EditModal({ payment, open, onOpenChange, onSave }: EditRecibo) {
               <Input
                 id="tipo-1"
                 name="tipo"
-                value={selectedTipo}
-                onChange={(event) => setSelectedTipo(event.currentTarget.value)}
+                value={formData.tipo}
+                onChange={(event) =>
+                  handleChange("tipo", event.currentTarget.value)
+                }
               />
+              {/* Mensaje de error */}
+              <ErrorMessage message={error.tipo} />
             </Field>
             {/* Fecha del recibo */}
             <Field>
@@ -99,13 +146,15 @@ export function EditModal({ payment, open, onOpenChange, onSave }: EditRecibo) {
                 id="fecha-1"
                 name="fecha"
                 type="date"
-                value={selectedFecha}
+                value={formData.fecha}
                 onChange={(event) =>
-                  setSelectedFecha(event.currentTarget.value)
+                  handleChange("fecha", event.currentTarget.value)
                 }
               />
+              {/* Mensaje de error */}
+              <ErrorMessage message={error.fecha} />
             </Field>
-            {/* Monto numérico: NumericFormat guarda floatValue como number */}
+            {/* Campo para el monto */}
             <Field>
               <Label htmlFor="monto-1">Monto</Label>
               <NumericFormat
@@ -113,21 +162,27 @@ export function EditModal({ payment, open, onOpenChange, onSave }: EditRecibo) {
                 id="monto"
                 name="monto"
                 prefix="₡"
+                customInput={Input}
+                allowNegative={false}
                 thousandSeparator=","
                 placeholder="0"
                 min="0"
                 step="0.01"
-                value={newMonto ?? payment?.monto ?? 0}
-                onValueChange={(values) => setMonto(values.floatValue ?? 0)}
+                value={formData.monto ?? 0}
+                onValueChange={(values) => {
+                  handleChange("monto", values.floatValue);
+                }}
               />
+              {/* Mensaje de error */}
+              <ErrorMessage message={error.monto} />
             </Field>
             {/* Estado del recibo */}
             <Field>
               <FieldLabel htmlFor="estado-1">Estado</FieldLabel>
               <Select
                 name="estado"
-                value={selectedEstado}
-                onValueChange={(value) => setSelectedEstado(value)}
+                value={formData.estado}
+                onValueChange={(value) => handleChange("estado", value)}
               >
                 <SelectTrigger>
                   <SelectValue />
@@ -142,6 +197,8 @@ export function EditModal({ payment, open, onOpenChange, onSave }: EditRecibo) {
                   </SelectGroup>
                 </SelectContent>
               </Select>
+              {/* Mensaje de error */}
+              <ErrorMessage message={error.estado} />
             </Field>
           </FieldGroup>
           <DialogFooter>
@@ -154,22 +211,4 @@ export function EditModal({ payment, open, onOpenChange, onSave }: EditRecibo) {
       </DialogContent>
     </Dialog>
   );
-}
-
-function handleSave(
-  payment: Payment,
-  selectedTipo: string,
-  selectedFecha: string,
-  newMonto: number,
-  selectedEstado: string,
-  onSave: (updatedPayment: Payment) => void,
-) {
-  const updatedPayment: Payment = {
-    id: payment.id || 0,
-    tipo: selectedTipo,
-    fecha: selectedFecha,
-    monto: newMonto,
-    estado: selectedEstado,
-  };
-  onSave(updatedPayment);
 }

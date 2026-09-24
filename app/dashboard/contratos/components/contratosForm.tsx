@@ -2,11 +2,13 @@
 import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Contratos } from "@/types/contrato";
 
-import { columnsContrato, Contratos } from "../components/columns";
+import { columnsContrato } from "../components/columns";
 import { DataTable } from "../../components/data-table";
-import { EditModal } from "../components/modal";
+
 import { CreateContrato } from "@/app/services/contratos/contratos";
+import { EditModal } from "../components/modal";
 
 import React from "react";
 

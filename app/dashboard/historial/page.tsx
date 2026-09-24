@@ -116,6 +116,7 @@ function HistorialPage() {
         {/* Modal para editar recibo */}
         {selectedPayment && (
           <EditModal
+          key={selectedPayment.id}
             payment={selectedPayment}
             open={isModalOpen}
             onOpenChange={setIsModalOpen}

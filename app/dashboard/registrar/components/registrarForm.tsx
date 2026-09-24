@@ -208,9 +208,7 @@ function RegistrarForm({ onNuevoRegistro, id }: Props) {
                     </ComboboxList>
                   </ComboboxContent>
                 </Combobox>
-                {errors.estado && (
-                  <p className="mt-1 text-sm text-red-500">{errors.estado}</p>
-                )}
+                <ErrorMessage message={errors.estado} />
               </div>
               <Button
                 type="submit"
