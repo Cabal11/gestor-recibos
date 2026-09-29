@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 
 import ContratosForm from "./components/contratosForm";
 
-import { columnsContrato, Contratos } from "./components/columns";
+import { columnsContrato } from "./components/columns";
 import { DataTable } from "../components/data-table";
 import { EditModal } from "./components/modal";
 
@@ -22,12 +22,13 @@ import {
 import Link from "next/link";
 
 import { DeleteContrato } from "@/app/services/contratos/contratos";
+import { Contratos } from "@/types/contrato";
 
 function ContratosPage() {
   const emptyContrato = (): Contratos => ({
     id: 0,
     tipo: "",
-    numero: 0,
+    numero: "",
   });
 
   const [newContrato, setNewContrato] = useState<Contratos>(emptyContrato());

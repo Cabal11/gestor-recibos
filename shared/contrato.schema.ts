@@ -2,8 +2,9 @@ import { z } from "zod";
 
 export const contratoSchema = z.object({
   id: z.int(),
-  tipo: z.coerce.string().min(1, "Ingresa un nombre"),
-  monto: z.number({ error: "El numero es requerido" }),
+  tipo: z.coerce.string().min(1, "Ingresa un tipo de contrato o servicio"),
+  numero: z.string().min(1, "Ingrese un numero de contrato o servicio"),
 });
 
-export type PaymentForm = z.infer<typeof contratoSchema>;
+
+export type ContratoForm = z.infer<typeof contratoSchema>;

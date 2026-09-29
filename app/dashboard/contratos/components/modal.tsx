@@ -12,12 +12,15 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Field, FieldGroup } from "@/components/ui/field";
-
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Contratos } from "./columns";
+import { Input } from "@/components/ui/input";
+
+import ErrorMessage from "../../components/error-message";
+import { Contratos } from "@/types/contrato";
+import { ContratoForm, contratoSchema } from "@/shared/contrato.schema";
 
 import { EditContrato } from "@/app/services/contratos/contratos";
+import ContratosForm from "./contratosForm";
 
 interface EditContrato {
   contrato: Contratos;
@@ -32,26 +35,62 @@ export function EditModal({
   onOpenChange,
   onSave,
 }: EditContrato) {
-  const [selectedTipo, setSelectedTipo] = useState("");
-  const [selectedNumero, setSelectedNumero] = useState<number | undefined>(
-    undefined,
-  );
+  const [formData, setFormData] = useState<Contratos>({
+    id: contrato.id,
+    tipo: contrato.tipo,
+    numero: contrato.numero,
+  });
 
-  useEffect(() => {
-    if (!open) return;
+  const [error, setError] = useState<
+    Partial<Record<keyof ContratoForm, string>>
+  >({});
 
-    setSelectedTipo(contrato.tipo ?? "");
-    setSelectedNumero(contrato.numero ?? 0);
-  }, [open, contrato.id, contrato.tipo, contrato.numero]);
+  const handleChange = <K extends keyof Contratos>(
+    field: K,
+    value: Contratos[K],
+  ) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+
+    setError((prev) => ({ ...prev, [field]: undefined }));
+  };
 
   function handleOpenChange(nextOpen: boolean) {
     if (!nextOpen) {
-      setSelectedTipo("");
-      setSelectedNumero(undefined);
+      setFormData({
+        id: 0,
+        tipo: "",
+        numero: "",
+      });
+      setError({});
     }
 
     onOpenChange(nextOpen);
   }
+
+  const handleSave = (
+    contrato: Contratos,
+    onSave: (updatedContrato: Contratos) => void,
+  ) => {
+    const updatedContrato: Contratos = {
+      id: contrato.id,
+      tipo: formData.tipo,
+      numero: formData.numero,
+    };
+
+    const result = contratoSchema.safeParse(updatedContrato);
+
+    if (!result.success) {
+      const fieldErrors = result.error.flatten().fieldErrors;
+      setError({
+        id: fieldErrors.id?.[0],
+        tipo: fieldErrors.tipo?.[0],
+        numero: fieldErrors.numero?.[0],
+      });
+      return;
+    }
+    EditContrato(updatedContrato);
+    onSave(updatedContrato);
+  };
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -59,7 +98,7 @@ export function EditModal({
         <form
           onSubmit={(event) => {
             event.preventDefault();
-            handleSave(contrato, selectedTipo, selectedNumero ?? 0, onSave);
+            handleSave(contrato, onSave);
           }}
         >
           <DialogHeader>
@@ -76,9 +115,12 @@ export function EditModal({
               <Input
                 id="tipo-1"
                 name="tipo"
-                value={selectedTipo}
-                onChange={(event) => setSelectedTipo(event.currentTarget.value)}
+                value={formData.tipo}
+                onChange={(event) =>
+                  handleChange("tipo", event.currentTarget.value)
+                }
               />
+              <ErrorMessage message={error.tipo} />
             </Field>
 
             {/* Numero del contrato */}
@@ -87,12 +129,11 @@ export function EditModal({
               <Input
                 id="numero"
                 name="numero"
-                type="number"
-                value={selectedNumero ?? 0}
-                onChange={(values) =>
-                  setSelectedNumero(parseInt(values.currentTarget.value))
-                }
+                type="text"
+                value={formData.numero}
+                onChange={(e) => handleChange("numero", e.currentTarget.value)}
               />
+              <ErrorMessage message={error.numero} />
             </Field>
           </FieldGroup>
           <DialogFooter>
@@ -105,19 +146,4 @@ export function EditModal({
       </DialogContent>
     </Dialog>
   );
-}
-
-function handleSave(
-  contrato: Contratos,
-  selectedTipo: string,
-  selectedNumero: number,
-  onSave: (updatedContrato: Contratos) => void,
-) {
-  const updatedContrato: Contratos = {
-    id: contrato.id,
-    tipo: selectedTipo,
-    numero: selectedNumero,
-  };
-  EditContrato(updatedContrato);
-  onSave(updatedContrato);
 }

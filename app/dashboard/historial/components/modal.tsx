@@ -161,7 +161,7 @@ export function EditModal({ payment, open, onOpenChange, onSave }: EditRecibo) {
                 customInput={Input}
                 allowNegative={false}
                 thousandSeparator=","
-                placeholder="0"
+                placeholder="₡ 0,00"
                 min="0"
                 step="0.01"
                 value={formData.monto ?? 0}
