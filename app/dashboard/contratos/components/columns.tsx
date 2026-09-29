@@ -1,5 +1,6 @@
 import { Pencil } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
+import { Contratos } from "@/types/contrato";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -11,11 +12,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-export type Contratos = {
-  id: number;
-  tipo: string;
-  numero: number;
-};
 
 
 export const columnsContrato = (
@@ -48,7 +44,7 @@ export const columnsContrato = (
             <DropdownMenuLabel>Acciones</DropdownMenuLabel>
             <DropdownMenuItem
               onClick={() =>
-                navigator.clipboard.writeText(contrato.numero.toString())
+                navigator.clipboard.writeText(contrato.numero ?? "")
               }
             >
               Copiar número de contrato
