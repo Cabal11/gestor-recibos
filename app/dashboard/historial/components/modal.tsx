@@ -24,7 +24,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import ErrorMessage from "../../components/error-message";
-import { Payment } from "@/types/payment";
+import { Payment } from "@/types/payment"
 import { pagoSchema, PaymentForm } from "@/shared/pago.schema";
 
 interface EditRecibo {
@@ -110,11 +110,7 @@ export function EditModal({ payment, open, onOpenChange, onSave }: EditRecibo) {
         <form
           onSubmit={(event) => {
             event.preventDefault();
-            handleSave(
-              payment,
-
-              onSave,
-            );
+            handleSave(payment, onSave);
           }}
         >
           <DialogHeader>

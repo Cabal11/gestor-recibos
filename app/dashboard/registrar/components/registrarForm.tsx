@@ -35,7 +35,7 @@ function RegistrarForm({ onNuevoRegistro, id }: Props) {
     String(today.getDate()).padStart(2, "0"),
   ].join("-");
 
-  //Tipo parap form y agregar valores iniciales y tipo para validar en submit
+ 
 
   const empty = (): Payment => ({
     id: 0,

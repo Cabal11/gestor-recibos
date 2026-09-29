@@ -1,6 +1,7 @@
 "use client";
 import { DataTable } from "../components/data-table";
-import { columns, columnsHistorial, Payment } from "../components/columns";
+import { columnsHistorial } from "../components/columns";
+import { Payment } from "@/types/payment";
 
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
@@ -13,12 +14,10 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { EditModal } from "./components/modal";
 
 import {
-  ObtenerPagos,
   EditPagos,
   DeletePagos,
 } from "@/app/services/registrar/pagos";
@@ -26,7 +25,6 @@ import {
 function HistorialPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedPayment, setSelectedPayment] = useState<Payment | null>(null);
-  const [data, setData] = useState<Payment[]>([]);
 
   const [historial, setHistorial] = useState<Payment[]>([
     {

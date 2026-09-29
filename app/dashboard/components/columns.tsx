@@ -17,13 +17,14 @@ import {
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
-export type Payment = {
-  id: number;
-  tipo: string;
-  fecha: string;
-  monto: number;
-  estado: string;
-};
+import { Payment } from "@/types/payment";
+// export type Payment = {
+//   id: number;
+//   tipo: string;
+//   fecha: string;
+//   monto: number;
+//   estado: string;
+// };
 
 export type Contratos = {
   id: number;
