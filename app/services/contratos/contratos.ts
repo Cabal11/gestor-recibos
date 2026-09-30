@@ -47,7 +47,7 @@ export async function GetContrato(id: number) {
 
 
 // Crear Contrato
-export async function CreateContrato(contrato: Contrato) {
+export async function CreateContrato(contrato: Contratos) {
 
   const respuesta = await fetch(
     `${url}/api/contratos`,
@@ -69,7 +69,7 @@ export async function CreateContrato(contrato: Contrato) {
 
 
 // Editar Contrato
-export async function EditContrato(contrato: Contrato) {
+export async function EditContrato(contrato: Contratos) {
 
   const respuesta = await fetch(
     `${url}/api/contratos/${contrato.id}`,
