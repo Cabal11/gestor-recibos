@@ -10,12 +10,9 @@ app.use(express.json());
 app.use("/api", pagosRoutes)
 app.use("/api", contratosRoutes)
 
-// app.get("/api", (req: Request, res: Response) => {
-//   res.send("Hello World");
-// });
+app.get("/api", (req: Request, res: Response) => {
+  res.send("Ok");
+});
 
-// app.listen(port, () => {
-//   console.log("Iniciado: ", port);
-// });
 
 export default app;
