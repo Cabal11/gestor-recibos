@@ -1,6 +1,6 @@
 "use server"
 
-import { Contrato } from "@/types/contrato"
+import { Contratos } from "@/types/contrato"
 
 const url = process.env.API_URL_DEV;
 
