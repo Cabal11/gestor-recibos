@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "tsx watch server.ts",
-    "start": "node dist/server.ts",
+    "start": "node dist/server.js",
     "swagger": "tsx swagger.ts",
     "build": "tsc"
   },
