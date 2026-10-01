@@ -1,10 +1,11 @@
 "use server";
 
 import { Payment } from "@/types/payment";
+import { API_URL } from "@/lib/api";
 
 //Guardar pago
 export async function PagosPost(pago: Payment) {
-  const respuesta = await fetch(`${process.env.API_URL_DEV}/api/pagos`, {
+  const respuesta = await fetch(`${API_URL}/api/pagos`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -21,7 +22,7 @@ export async function PagosPost(pago: Payment) {
 
 //Obtener pagos
 export async function ObtenerPagos() {
-  const respuesta = await fetch(`${process.env.API_URL_DEV}/api/pagos`);
+  const respuesta = await fetch(`${API_URL}/api/pagos`);
 
   if (!respuesta.ok) {
     throw Error("No se obtuvieron los datos");
@@ -32,16 +33,13 @@ export async function ObtenerPagos() {
 
 //Editar Pagos
 export async function EditPagos(pago: Payment) {
-  const respuesta = await fetch(
-    `${process.env.API_URL_DEV}/api/pagos/${pago.id}`,
-    {
-      method: "PUT",
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify(pago),
+  const respuesta = await fetch(`${API_URL}/api/pagos/${pago.id}`, {
+    method: "PUT",
+    headers: {
+      "content-type": "application/json",
     },
-  );
+    body: JSON.stringify(pago),
+  });
 
   if (!respuesta.ok) {
     throw Error("No se editaron los datos");
@@ -53,7 +51,7 @@ export async function EditPagos(pago: Payment) {
 // Eliminar Pagos
 
 export async function DeletePagos(id: number) {
-  const respuesta = await fetch(`${process.env.API_URL_DEV}/api/pagos/${id}`, {
+  const respuesta = await fetch(`${API_URL}/api/pagos/${id}`, {
     method: "DELETE",
     headers: {
       "content-type": "application/json",

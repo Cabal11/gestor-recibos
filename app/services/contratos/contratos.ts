@@ -1,14 +1,14 @@
 "use server"
 
 import { Contratos } from "@/types/contrato"
+import { API_URL } from "@/lib/api";
 
-const url = process.env.API_URL_DEV;
 
 // Obtener todos los Contratos
 export async function GetContratos() {
 
   const respuesta = await fetch(
-    `${url}/api/contratos`,
+    `${API_URL}/api/contratos`,
     {
       method: "GET",
       headers: {
@@ -29,7 +29,7 @@ export async function GetContratos() {
 export async function GetContrato(id: number) {
 
   const respuesta = await fetch(
-    `${url}/api/contratos/${id}`,
+    `${API_URL}/api/contratos/${id}`,
     {
       method: "GET",
       headers: {
@@ -50,7 +50,7 @@ export async function GetContrato(id: number) {
 export async function CreateContrato(contrato: Contratos) {
 
   const respuesta = await fetch(
-    `${url}/api/contratos`,
+    `${API_URL}/api/contratos`,
     {
       method: "POST",
       headers: {
@@ -72,7 +72,7 @@ export async function CreateContrato(contrato: Contratos) {
 export async function EditContrato(contrato: Contratos) {
 
   const respuesta = await fetch(
-    `${url}/api/contratos/${contrato.id}`,
+    `${API_URL}/api/contratos/${contrato.id}`,
     {
       method: "PUT",
       headers: {
@@ -94,7 +94,7 @@ export async function EditContrato(contrato: Contratos) {
 export async function DeleteContrato(id: number) {
 
   const respuesta = await fetch(
-    `${url}/api/contratos/${id}`,
+    `${API_URL}/api/contratos/${id}`,
     {
       method: "DELETE",
       headers: {

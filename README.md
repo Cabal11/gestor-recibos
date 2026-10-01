@@ -4,7 +4,7 @@ Sistema web para gestionar pagos, recibos y contratos de servicios desde una int
 
 > 🚧 En desarrollo activo — MVP funcional
 
-[Live Demo](https://pagosmensualesgestor.netlify.app/dashboard) · [API](...) · [Repositorio](https://github.com/Cabal11/gestor-recibos.git)
+[Live Demo](https://pagosmensualesgestor.netlify.app/dashboard) · [API](https://gestor-recibos.onrender.com/docs) · [Repositorio](https://github.com/Cabal11/gestor-recibos.git)
 
 ## Preview
 
