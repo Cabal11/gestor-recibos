@@ -9,10 +9,13 @@
   "scripts": {
     "dev": "tsx watch server.ts",
     "start": "node dist/server.ts",
+    "swagger": "tsx swagger.ts",
     "build": "tsc"
   },
   "dependencies": {
+    "@scalar/express-api-reference": "^0.10.25",
     "dotenv": "^17.4.2",
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "swagger-autogen": "^2.23.7"
   }
 }
