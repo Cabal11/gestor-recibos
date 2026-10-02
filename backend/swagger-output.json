@@ -5,10 +5,10 @@
     "description": "API REST para la gestion de pagos y recibos de los usuarios",
     "version": "1.0.0"
   },
-  "host": "localhost:4000",
+  "host": "https://gestor-recibos.onrender.com",
   "basePath": "/api",
   "schemes": [
-    "http"
+    "https"
   ],
   "paths": {
     "/contratos": {

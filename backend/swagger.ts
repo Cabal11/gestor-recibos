@@ -6,10 +6,11 @@ const doc = {
     description: "API REST para la gestion de pagos y recibos de los usuarios",
     version: "1.0.0",
   },
-  host: `${process.env.API_URL_DEV}`,
+  host: "https://gestor-recibos.onrender.com",
   basePath: "/api",
-  schemes: ["http"],
+  schemes: ["https"],
 };
+
 
 const outputFile = "./swagger-output.json";
 const endpointsFiles = ["src/routes/*.ts"];
