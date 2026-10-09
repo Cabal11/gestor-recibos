@@ -1,4 +1,6 @@
 import type { Response, Request, NextFunction } from "express";
+import { pagosSchema, pagosIdSchema } from "../validators/pagos.validator.ts";
+import { error } from "node:console";
 
 //Obtener todos los datos
 export const getPagos = async (
@@ -15,7 +17,10 @@ export const getPagos = async (
 
     res.json(data).status(200);
   } catch (error) {
-    res.json({ message: "No se obtuvieron los datos" }).status(400);
+    console.error(error);
+    return res
+      .status(500)
+      .send({ message: "Problema al obtener los pagos" });
   }
 };
 
@@ -28,11 +33,21 @@ export const getPago = async (
   try {
     const id = req.params.id;
 
-    console.log(id);
+    const resultId = pagosIdSchema.safeParse(id);
 
-    res.send({ id });
+    if (!resultId.success) {
+      return res.status(400).send({
+        message: "Error de validacion ID",
+        error: resultId.error.flatten().fieldErrors,
+      });
+    }
+
+    console.log(resultId.data);
+
+    res.send({ id: resultId.data });
   } catch (error) {
-    res.status(400).send({ message: "No se obtuvo el pago" });
+    console.error(error);
+    return res.status(500).send({ message: "Problema al obtener el pago" });
   }
 };
 
@@ -45,9 +60,22 @@ export const crearPago = async (
   try {
     const data = req.body;
     console.log(data);
-    res.send(data);
+
+    const result = pagosSchema.safeParse(data);
+
+    if (!result.success) {
+      return res.status(400).json({
+        message: "Error de validacion",
+        error: result.error.flatten().fieldErrors,
+      });
+    }
+
+    res
+      .send({ message: "Guardado correctamente", data: result.data })
+      .status(201);
   } catch (error) {
-    res.status(400).send({ message: "No se registro el pago" });
+    console.error(error);
+    return res.status(500).send({ message: "Problema al crear el pago" });
   }
 };
 
@@ -61,17 +89,35 @@ export const editarPago = async (
     const id = req.params.id;
     const data = req.body;
 
+    const resultId = pagosIdSchema.safeParse(id);
+    const result = pagosSchema.safeParse(data)
+
+    if (!resultId.success) {
+      return res.status(400).send({
+        message: "El ID del pago no es valido",
+        error: resultId.error.flatten().fieldErrors,
+      });
+    }
+
+    if (!result.success) {
+      return res.status(400).send({
+        message: "Error de validacion",
+        error: result.error.flatten().fieldErrors,
+      });
+    }
+
     console.log(id);
     console.log(data);
 
     // Aquí posteriormente actualizarás el pago en la base de datos
 
     res.send({
-      id,
-      data,
+      id: resultId.data,
+      data: result.data,
     });
   } catch (error) {
-    res.status(400).send({ message: "No se edito el pago" });
+    console.error(error);
+    return res.status(500).send({ message: "Problema al actualizar el pago" });
   }
 };
 
@@ -85,11 +131,22 @@ export const eliminarPagos = async (
     const id = req.params.id;
 
     console.log(id);
+    const resultId = pagosIdSchema.safeParse(id);
+
+    if (!resultId.success) {
+      return res
+        .status(400)
+        .send({
+          message: "El ID del pago es invalido",
+          error: resultId.error.flatten().fieldErrors,
+        });
+    }
 
     // Aquí posteriormente eliminarás el pago de la base de datos
 
-    res.send({ id });
+    res.status(204).send({ id: resultId.data });
   } catch (error) {
-    res.status(400).send({ message: "No se elimino el pago" });
+    console.error(error);
+    return res.status(500).send({ message: "Problema al eliminar el pago" });
   }
 };

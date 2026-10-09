@@ -1,14 +1,20 @@
 {
   "swagger": "2.0",
+  "openapi": "3.0.0",
   "info": {
     "title": "API Pagos",
     "description": "API REST para la gestion de pagos y recibos de los usuarios",
     "version": "1.0.0"
   },
-  "host": "gestor-recibos.onrender.com",
-  "basePath": "/api",
-  "schemes": [
-    "https"
+  "servers": [
+    {
+      "url": "https://gestor-recibos.onrender.com/api",
+      "description": "Desarrollo produccion"
+    },
+    {
+      "url": "http://localhost:4000/api",
+      "description": "Desarrollo local"
+    }
   ],
   "paths": {
     "/contratos": {
