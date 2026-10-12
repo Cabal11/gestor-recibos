@@ -1,10 +1,14 @@
 import { z } from "zod";
 
-export const pagosIdSchema = z.number({error: "El ID debe ser number"}).int().positive()
+export const pagosIdSchema = z.object({
+  id: z.coerce.number({ error: "El ID debe ser number" }).int().positive(),
+});
 
 export const pagosSchema = z.object({
-  tipo: z.string({error: "El tipo debe ser una cadena de caracteres"}).min(1, { error: "Se espera un tipo de pago" }),
-  fecha: z.string({error: "La fecha debe ser de tipo string"}),
+  tipo: z
+    .string({ error: "El tipo debe ser una cadena de caracteres" })
+    .min(1, { error: "Se espera un tipo de pago" }),
+  fecha: z.string({ error: "La fecha debe ser de tipo string" }),
   monto: z
     .number({ error: "El monto debe ser un numero" })
     .positive({ error: "El monto debe ser mayor a cero" }),

@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "tipo": "Pago de electricidad",
+    "fecha": "2026-10-01",
+    "monto": 18500,
+    "estado": "Pagado"
+  },
+  {
+    "id": 2,
+    "tipo": "Pago de agua",
+    "fecha": "2026-10-03",
+    "monto": 7500,
+    "estado": "Pendiente"
+  }
+]

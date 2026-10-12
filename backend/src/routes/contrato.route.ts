@@ -1,11 +1,32 @@
-import express from "express"
-import * as contratoController from "../controllers/contrato.controller.ts"
+import express from "express";
+import * as contratoController from "../controllers/contrato.controller.ts";
+import { validate } from "../middleware/validate.ts";
+import {
+  contratoSchema,
+  contratoIdSchema,
+} from "../validators/contrato.validator.ts";
+const router = express.Router();
 
-const router = express.Router()
-
-router.get("/contratos", contratoController.obtenerContratos)
-router.post("/contratos", contratoController.crearContrato)
-router.put("/contratos/:id", contratoController.editarContrato)
-router.delete("/contratos/:id", contratoController.eliminarContrato)
+//GET
+router.get("/contratos", contratoController.obtenerContratos);
+//POST
+router.post(
+  "/contratos",
+  validate(contratoSchema, "body"),
+  contratoController.crearContrato,
+);
+//PUT
+router.put(
+  "/contratos/:id",
+  validate(contratoIdSchema, "params"),
+  validate(contratoSchema, "body"),
+  contratoController.editarContrato,
+);
+//DELETE
+router.delete(
+  "/contratos/:id",
+  validate(contratoIdSchema, "params"),
+  contratoController.eliminarContrato,
+);
 
 export default router;

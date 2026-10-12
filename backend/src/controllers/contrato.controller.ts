@@ -3,14 +3,9 @@ import {
   contratoSchema,
   contratoIdSchema,
 } from "../validators/contrato.validator.ts";
-import { error } from "node:console";
 
 // Obtener todos los registros
-export const obtenerContratos = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+export const obtenerContratos = async (req: Request, res: Response) => {
   try {
     // Aquí posteriormente consultarás la base de datos
 
@@ -24,26 +19,15 @@ export const obtenerContratos = async (
 };
 
 // Obtener un registro
-export const obtenerContrato = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+export const obtenerContrato = async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
 
-    const resultId = contratoIdSchema.safeParse(id);
-    if (!resultId.success) {
-      return res.status(400).send({
-        message: "El ID es invalido",
-        error: resultId.error.flatten().fieldErrors,
-      });
-    }
-    console.log(resultId.data);
+    console.log(id);
 
     // Aquí posteriormente buscarás el contrato en la base de datos
 
-    res.send({ id: resultId.data });
+    res.send({ id: id, data: "dato" });
   } catch (error) {
     console.error("Error al obtener el contrato", error);
     return res.status(500).send({ message: "Problema al obtener el contrato" });
@@ -54,20 +38,11 @@ export const obtenerContrato = async (
 export const crearContrato = async (
   req: Request,
   res: Response,
-  next: NextFunction,
 ) => {
   try {
     const data = req.body;
-    const result = contratoSchema.safeParse(data);
 
-    if (!result.success) {
-      return res.status(400).send({
-        message: "Error de validacion",
-        error: result.error.flatten().fieldErrors,
-      });
-    }
-
-    res.status(201).send({ message: "Contrato creado", data: result.data });
+    res.status(201).send({ message: "Contrato creado", data: data });
   } catch (error) {
     console.error("Error al registrar el contrato", error);
     return res
@@ -77,42 +52,20 @@ export const crearContrato = async (
 };
 
 // Editar contrato
-export const editarContrato = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+export const editarContrato = async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
     const data = req.body;
 
     console.log(id);
     console.log(data);
-    const idResult = contratoIdSchema.safeParse(id);
-    const result = contratoSchema.safeParse(data);
-
-    if (!idResult.success) {
-      return res.status(400).json({
-        message: "El ID del contrato no es válido",
-        error: idResult.error.flatten().fieldErrors,
-      });
-    }
-
-    if (!result.success) {
-      return res
-        .status(400)
-        .send({
-          message: "Error de validacion",
-          error: result.error.flatten().fieldErrors,
-        });
-    }
 
     // Aquí posteriormente actualizarás el contrato en la base de datos
 
     res.status(200).send({
       message: "Actualizado correctamente",
-      id,
-      data: result.data,
+      id: id,
+      data: data,
     });
   } catch (error) {
     console.log("Error al editar el contrato", error);
@@ -121,26 +74,15 @@ export const editarContrato = async (
 };
 
 // Eliminar registro
-export const eliminarContrato = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+export const eliminarContrato = async (req: Request, res: Response) => {
   try {
     const id = req.params.id;
 
     console.log(id);
-    const idResult = contratoIdSchema.safeParse(id);
 
-    if (!idResult.success) {
-      return res.status(400).json({
-        message: "El ID del contrato no es válido",
-        error: idResult.error.flatten().fieldErrors,
-      });
-    }
     // Aquí posteriormente eliminarás el contrato de la base de datos
 
-    res.status(204).send({ message: "Eliminado correctamente", id });
+    res.status(204).send({ message: "Eliminado correctamente", id: id });
   } catch (error) {
     console.error("Error al eliminar el contrato", error);
     return res
